@@ -1,15 +1,23 @@
 from django.shortcuts import render,redirect
-from .froms import CreateUserForm,LoginUserForm
+from .froms import CreateUserForm,LoginUserForm,UpdateUserForm
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
+from .models import Course_Available,Instructor_Available,Student
 
 
 # Create your views here
 # User Dashboard
 @login_required(login_url='login')
 def Home(request):
-    return render(request,'home.html')
+    student = Student.objects.all().count()
+    teacher = Instructor_Available.objects.all().count()
+    course = Course_Available.objects.all().count()
+    return render(request,'home.html',{
+        'student':student,
+        'teacher':teacher,
+        'course':course
+    })
 
 
 # Logout a user
@@ -51,3 +59,28 @@ def Signup(request):
     }
 
     return render(request,'register.html',context)
+
+
+
+# Create,edit,delete a course
+def show_courses(request):
+    courses = Course_Available.objects.all()
+    return render(request,'Courses.html',{
+        'courses':courses
+    })
+
+def edit_courses(request):
+    return render(request,'Courses.html')
+
+
+def add_courses(request):
+    return render(request,'Courses.html')
+
+def delete_courses(request):
+    return render(request,'Courses.html')
+
+
+
+
+
+
