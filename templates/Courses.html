@@ -2,9 +2,10 @@
 <br />
 {% block content %}
 <br />
+
 <div class="d-flex justify-content-center align-items-center mb-3 gap-5">
   <h1 class="mb-0">Course Details</h1>
-  <button class="btn btn-primary">Add Course</button>
+  <a class="btn btn-primary" href="{% url 'addCourse' %}">Add Course</a>
 </div>
 
 <div class="d-flex justify-content-center align-items-center">
@@ -36,7 +37,20 @@
           <td>{{course.course_period}}</td>
           <td>{{course.created_at}}</td>
 
-          <td></td>
+          <td>
+            <ul class="d-flex" style="list-style: none">
+              <li>
+                <a href="{% url 'editCourse' course.id %}"
+                  ><i class="fa-solid fa-pencil"></i
+                ></a>
+              </li>
+              <li>
+                <a href="{% url 'deleteCourse' course.id %}"
+                  ><i class="fa-solid fa-trash"></i
+                ></a>
+              </li>
+            </ul>
+          </td>
         </tr>
         {% endfor %}
       </tbody>

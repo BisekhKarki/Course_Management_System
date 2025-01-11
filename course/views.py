@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .froms import CreateUserForm,LoginUserForm,UpdateUserForm
+from .froms import CreateUserForm,LoginUserForm,UpdateUserForm,CreateCourseForm
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
@@ -69,15 +69,44 @@ def show_courses(request):
         'courses':courses
     })
 
-def edit_courses(request):
-    return render(request,'Courses.html')
+def edit_courses(request,pk):
+    if request.user.is_authenticated:
+        current_course = Course_Available.objects.get(id=pk)
+        form = CreateCourseForm(request.POST or None,instance=current_course)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Course updated successufully')
+            return redirect('course')
+        return render(request,'editStudent.html',{
+            'form':form
+        })
+    else:
+        return redirect('home')
+
 
 
 def add_courses(request):
-    return render(request,'Courses.html')
+    form = CreateCourseForm()
+    if request.method == "POST":
+        form = CreateCourseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Course Added successfully')
+            return redirect('course')
 
-def delete_courses(request):
-    return render(request,'Courses.html')
+    return render(request,'addCourse.html',{
+        'form':form
+    })
+
+def delete_courses(request,pk):
+    if request.user.is_authenticated:
+        getCourse = Course_Available.objects.get(id=pk)
+        getCourse.delete()
+        messages.success(request,'Course deleted successfully')
+        return redirect('course')
+    else:
+        messages.success(request,"You must be logged In")
+        return redirect('home')
 
 
 
